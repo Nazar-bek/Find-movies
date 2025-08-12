@@ -6,7 +6,7 @@ import MovieService from "../../services/movie-series";
 
 const App = () => {
   const getMovieData = new MovieService();
-  getMovieData.getDetailMovie(278).then((res) => console.log(res));
+ 
   return (
     <div className="app">
       <Navbar />

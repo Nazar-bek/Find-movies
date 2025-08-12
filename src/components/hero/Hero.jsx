@@ -1,30 +1,70 @@
 import React from "react";
 import "./hero.scss";
-import image from "/image1.svg"
-const Hero = () => {
-  return (
-    <div className="hero">
-      <div className="hero__info">
-        <h2>FIND MOVIES</h2>
-        <h1>Tv shows and more </h1>
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam temporibus repellendus corporis optio tempore maiores voluptatum ex tenetur cumque, omnis, provident quaerat dolores libero odio esse modi necessitatibus consequatur excepturi.
-        </p>
-        <button className="btn btn-primary">Detailes</button>
-      </div>
-      <div className="hero__movie">
-        <img src={image} alt="Image" />
-        <div className="hero__movie-descr">
-        <h2>Madeline</h2>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque nulla cum magni, perferendis facilis et eveniet maiores aperiam voluptas totam ea ratione autem non reprehenderit quo accusantium fugiat illum culpa!</p>
-        <div>
-            <button className="btn btn-secondary">Random Movie</button>
-            <button className="btn btn-secondary">Details</button>
-        </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import image from "/image1.svg";
+import MovieService from "../../services/movie-series";
+import Spinner from "../spinner/spinner";
+import Error from "../error/Error";
+class Hero extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      movie: {},
+      isLoading: true
+    }
 
+    this.movieService = new MovieService()
+    this.getRandomMoviee()
+  }
+  
+
+  getRandomMoviee = () =>{
+    this.movieService.getRandomMovies()
+    .then(res => {
+      this.setState({movie: res})
+    })
+    .finally(() => this.setState({isLoading: false}))
+  }
+
+  render() {
+    const {movie , isLoading} = this.state;
+    return (
+      <div className="hero">
+        <div className="hero__info">
+          <h2>FIND MOVIES</h2>
+          <h1>Tv shows and more </h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
+            temporibus repellendus corporis optio tempore maiores voluptatum ex
+            tenetur cumque, omnis, provident quaerat dolores libero odio esse
+            modi necessitatibus consequatur excepturi.
+          </p>
+          <button className="btn btn-primary">Detailes</button>
+        </div>
+        <div className="hero__movie">
+        {isLoading ? <div className="loader-wrapper"><Error/></div> :<Content movie={movie} ongetRandomMoviee={this.getRandomMoviee}/>}
+        </div>
+      </div>
+    )
+  }
+
+}
 export default Hero;
+
+
+const Content = ({movie, ongetRandomMoviee}) => {
+  return(
+    <>
+     <img src={movie.backdrop_path} alt="Image" />
+          <div className="hero__movie-descr">
+            <h2>{movie.name}</h2>
+            <p>
+              {movie.description}
+            </p>
+            <div>
+              <button onClick={ongetRandomMoviee} className="btn btn-secondary">Random Movie</button>
+              <button className="btn btn-secondary">Details</button>
+            </div>
+          </div>
+    </>
+  )
+}
