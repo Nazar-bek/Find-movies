@@ -3,10 +3,10 @@ import "./error.scss"
 import gif from "/error.gif"
 const Error = () => {
   return (
-    <div className='errormessage'>
-        <img src={gif} alt="Error" />
+    <div >
+        <img src={gif} alt="Error" className='errormessage'/>
     </div>
   )
 }
 
-export default Error
+export default Error;

@@ -9,7 +9,8 @@ class Hero extends React.Component {
     super(props);
     this.state = {
       movie: {},
-      isLoading: true
+      isLoading: true,
+      error: false
     }
 
     this.movieService = new MovieService()
@@ -22,11 +23,17 @@ class Hero extends React.Component {
     .then(res => {
       this.setState({movie: res})
     })
+    .catch(() => this.setState({error: true}))
     .finally(() => this.setState({isLoading: false}))
   }
 
   render() {
-    const {movie , isLoading} = this.state;
+    const {movie , isLoading, error,} = this.state;
+    
+
+    const errorContent = error ? <Error/> : null;
+    const loadingContent = isLoading ? <div className="look"><Spinner/></div> : null;
+    const content = !(error || isLoading) ? <Content movie={movie} ongetRandomMoviee={this.getRandomMoviee  }/> : null
     return (
       <div className="hero">
         <div className="hero__info">
@@ -41,7 +48,9 @@ class Hero extends React.Component {
           <button className="btn btn-primary">Detailes</button>
         </div>
         <div className="hero__movie">
-        {isLoading ? <div className="loader-wrapper"><Error/></div> :<Content movie={movie} ongetRandomMoviee={this.getRandomMoviee}/>}
+          {loadingContent}
+        {errorContent}
+        {content}
         </div>
       </div>
     )
