@@ -2,7 +2,7 @@ class MovieService {
   _apiBase = "https://api.themoviedb.org/3/movie/";
   _apiKey = "api_key=6d4e49c12c2855deb50aee77c7d9b3bc";
   _apiLng = "language=en-US";
-  _apiImage = "https://image.tmdb.org/t/p/original/"
+  _apiImage = "https://image.tmdb.org/t/p/original/";
   getRource = async (url) => {
     const response = await fetch(url);
     if (!response.ok) {
@@ -19,9 +19,11 @@ class MovieService {
     );
   };
   getTopRated = async () => {
-    return this.getRource(
+    const response = await this.getRource(
       `${this._apiBase}top_rated?${this._apiLng}&page=1&${this._apiKey}`
     );
+    const movies = response.results;
+   return movies && movies.map((item) => this._transformMovie(item));
   };
   getDetailMovie = async (id) => {
     return await this.getRource(
@@ -29,23 +31,25 @@ class MovieService {
     );
   };
 
-  getRandomMovies = async () =>{
-     const response = await  this.getPopular()
-    const movie = response.results[Math.floor(Math.random() * response.results.length)]
-      return this._transformMovie(movie)
-    }
-  
+  getRandomMovies = async () => {
+    const response = await this.getPopular();
+    const movie =
+      response.results[Math.floor(Math.random() * response.results.length)];
+    return this._transformMovie(movie);
+  };
 
-  _transformMovie= (movie) => {
+  _transformMovie = (movie) => {
     return {
       name: movie.original_title,
-        description: movie.overview,
-        backdrop_path: `${this._apiImage}${movie.backdrop_path}`,
-        poster_path: `${this._apiImage}${movie.poster_path}`,
-        id: movie.id
-    }
-  }
+      description: movie.overview,
+      backdrop_path: `${this._apiImage}${movie.backdrop_path}`,
+      poster_path: `${this._apiImage}${movie.poster_path}`,
+      id: movie.id,
+      release_date: movie.release_date,
+      vote_average: movie.vote_average
+
+    };
+  };
 }
 
 export default MovieService;
-  

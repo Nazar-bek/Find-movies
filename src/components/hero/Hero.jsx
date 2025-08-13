@@ -14,6 +14,8 @@ class Hero extends React.Component {
     }
 
     this.movieService = new MovieService()
+  }
+  componentDidMount(){
     this.getRandomMoviee()
   }
   
@@ -29,6 +31,7 @@ class Hero extends React.Component {
 
   render() {
     const {movie , isLoading, error,} = this.state;
+  
     
 
     const errorContent = error ? <Error/> : null;

@@ -5,17 +5,19 @@ import { Modal } from 'react-responsive-modal';
 const MovieItem = ({data, onToggleOpen}) => {
   return (
     <div className='movieitem' onClick={onToggleOpen}>
-        <img src={data.image} alt={data.title} />
+        <img src={data.poster_path} alt={data.name} />
         <h2>
-            {data.title} {data.index + 1 }
+            {data.name.length > 20 ? `${data.name.slice(0,20)}...` : data.name} 
         </h2>
         <div className='movieitem-descr'>
-            <p>{data.date}</p>
+          <img className='movieitem-descr_date' src="/date.svg" alt={data.name} />
+            <p>{data.release_date}</p>
             <div className='dot'/>
-            <p>{data.duration}</p>
+            <p>{data.vote_average.toFixed(1)}</p>
+            <img src="/star.svg" alt="" />
         </div>
     </div>
-  )
+  ) 
 }
 
 export default MovieItem;

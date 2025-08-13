@@ -5,7 +5,6 @@ import RowMovies from "../row-movies/RowMovies";
 import MovieService from "../../services/movie-series";
 
 const App = () => {
-  const getMovieData = new MovieService();
  
   return (
     <div className="app">

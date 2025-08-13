@@ -71,12 +71,10 @@
       div {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 70px;
-        margin-top: auto;
-        position: absolute;
-        bottom: 70px;
+        gap: 10px;
+        margin-top: 40px;
         button{
-          width: 140%;
+          
 
         }
       }
