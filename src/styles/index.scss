@@ -57,5 +57,15 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 50%;
+    height: 300px;
+}
+
+.errorStaff img{
+
+    margin: 0;
+}
+
+.errorStaff{
+    display: flex;
+    justify-content: center;
 }

@@ -1,67 +1,101 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./rowmovies.scss";
 import MovieItem from "../movie-item/MovieItem";
 import Modal from "react-responsive-modal";
 import MovieInfo from "../movie-info/MovieInfo";
 import MovieService from "../../services/movie-series";
 import Spinner from "../spinner/spinner";
-class RowMovies extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-      movies: [],
-      loading: true
-    };
-    this.getApiMovie = new MovieService();
-  }
+import Error from "../error/Error";
+const RowMovies = () => {
+  const [open, setOpen] = useState(false);
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [movieId, setMovieId] = useState(null);
+  const [page, setPage] = useState(2);
+  const [newItemLoading, setNewItemLoading] = useState(false);
 
-  getTrandingMovies = () => {
-    this.setState({ loading: true });
-    this.getApiMovie
-      .getTopRated()
-      .then((res) => this.setState({ movies: res }))
-      .catch(err => console.log(err.message)
+  const getApiMovie = new MovieService();
+
+  const getTrandingMovies = (page) => {
+    setLoading(true);
+    getApiMovie
+      .getTopRated(page)
+      .then((res) =>
+       setMovies(movies => [...movies, ...res]) 
       )
-      .finally(() => this.setState({loading: false}))
+      .catch(() => setError(true))
+      .finally(() => {setNewItemLoading(false) 
+        setLoading(false)});
   };
-  componentDidMount() {
-    this.getTrandingMovies();
-  }
 
-  onToggleOpen = () => {
-    this.setState(({ open }) => ({ open: !open }));
+  useEffect(() => {
+    getTrandingMovies();
+  }, []);
+
+  const onClose = () => setOpen(false);
+  const onOpen = (id) => {
+    setOpen(true);
+    setMovieId(id);
   };
-  render() {
-    const { open, movies , loading} = this.state;
-    console.log(movies);
-    
-    return (
-      <div className="rowmovies">
-        <div className="rowmovies__top">
-          <div className="rowmovies__top-title">
-            <img src="/tranding.svg" alt="Tranding" />
-            <h1>Trending</h1>
-          </div>
-          <div className="hr" />
-          <a href="#">See More</a>
-        </div>
-        <div className="rowmovies__lists">
-          {loading ?  (<div className="center"><Spinner/></div>) : movies.map((item) => (
-            <MovieItem
-              key={item.id}
-              data={item}
-              onToggleOpen={this.onToggleOpen}
-            />
-          ))}
-        </div>
 
-        <Modal open={open} onClose={this.onToggleOpen}>
-          <MovieInfo />
-        </Modal>
+  const getMoreMovies = () => {
+    setPage(page => page + 1)
+    setNewItemLoading(true)
+    getTrandingMovies(page);
+    console.log(page);
+  };
+  const loadingContent = loading ? (
+    <div className="loader-wrapper">
+      <Spinner />
+    </div>
+  ) : null;
+  const errorContent = error ? (
+    <div className="errorStaff">
+      <Error />
+    </div>
+  ) : null;
+  const content = !(error || loading) ? (
+    <Content movies={movies} onOpen={onOpen} />
+  ) : null;
+
+  return (
+    <div className="rowmovies">
+      <div className="rowmovies__top">
+        <div className="rowmovies__top-title">
+          <img src="/tranding.svg" alt="Tranding" />
+          <h1>Trending</h1>
+        </div>
+        <div className="hr" />
+        <a href="#">See More</a>
       </div>
-    );
-  }
-}
+      {errorContent}
+      {loadingContent}
+      {content}
+      <div className="rowmovies__loadmore">
+        <button
+          disabled={newItemLoading}
+          onClick={getMoreMovies}
+          className="btn btn-secondary "
+        >
+          Load More
+        </button>
+      </div>
+      <Modal open={open} onClose={onClose}>
+        <MovieInfo movieId={movieId} />
+      </Modal>
+    </div>
+  );
+};
 
 export default RowMovies;
+
+const Content = ({ movies, onOpen }) => {
+  return (
+    <div className="rowmovies__lists">
+      {movies.map((movie) => (
+        <MovieItem key={movie.id} data={movie} onOpen={onOpen} />
+      ))}
+    </div>
+  );
+};

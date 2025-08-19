@@ -3,6 +3,7 @@ class MovieService {
   _apiKey = "api_key=6d4e49c12c2855deb50aee77c7d9b3bc";
   _apiLng = "language=en-US";
   _apiImage = "https://image.tmdb.org/t/p/original/";
+  _apiPage = 1;
   getRource = async (url) => {
     const response = await fetch(url);
     if (!response.ok) {
@@ -18,17 +19,20 @@ class MovieService {
       `${this._apiBase}popular?${this._apiLng}&page=1&${this._apiKey}`
     );
   };
-  getTopRated = async () => {
+  getTopRated = async (page = this._apiPage) => {
     const response = await this.getRource(
-      `${this._apiBase}top_rated?${this._apiLng}&page=1&${this._apiKey}`
+      `${this._apiBase}top_rated?${this._apiLng}&page=${page}&${this._apiKey}`
     );
     const movies = response.results;
    return movies && movies.map((item) => this._transformMovie(item));
   };
   getDetailMovie = async (id) => {
-    return await this.getRource(
+  const response =  await this.getRource(
       `${this._apiBase}${id}?${this._apiLng}&${this._apiKey}`
     );
+
+    return this._transformMovie(response)
+
   };
 
   getRandomMovies = async () => {
@@ -47,7 +51,6 @@ class MovieService {
       id: movie.id,
       release_date: movie.release_date,
       vote_average: movie.vote_average
-
     };
   };
 }

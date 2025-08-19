@@ -30,4 +30,8 @@
             border-color: rgba(255, 255, 255, 0.1);
         }
     }
+    &:disabled{
+        cursor: not-allowed;
+        opacity: .5;
+    }
 }
