@@ -3,12 +3,12 @@ import "./movieinfo.scss";
 import MovieService from "../../services/movie-series.js";
 import Error from "../error/Error.jsx";
 import Spinner from "../spinner/spinner.jsx";
+import useMovieService from "../../services/movie-series.js";
 const MovieInfo = ({movieId}) => {
   const [movie, setMovie] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+ 
 
-  const movieService = new MovieService();
+  const {getDetailMovie, error, loading} = useMovieService()
   useEffect(() => {
     updateMovie();
   }, [movieId]);
@@ -16,11 +16,7 @@ const MovieInfo = ({movieId}) => {
     if (!movieId) {
       setError(true)
     }
-    movieService
-      .getDetailMovie(movieId)
-      .then((res) => setMovie(res))
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
+   getDetailMovie(movieId).then((res) => setMovie(res))
   };
 
   const errorContent = error ? <Error /> : null;
@@ -29,7 +25,7 @@ const MovieInfo = ({movieId}) => {
       <Spinner />
     </div>
   ) : null;
-  const content = !(error || loading) ? (
+  const content = !(error || loading || !movie) ? (
     <Content movie={movie} ongetRandomMoviee={updateMovie} />
   ) : null;
   return (

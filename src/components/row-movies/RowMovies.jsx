@@ -6,27 +6,21 @@ import MovieInfo from "../movie-info/MovieInfo";
 import MovieService from "../../services/movie-series";
 import Spinner from "../spinner/spinner";
 import Error from "../error/Error";
+import useMovieService from "../../services/movie-series";
 const RowMovies = () => {
   const [open, setOpen] = useState(false);
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [movieId, setMovieId] = useState(null);
   const [page, setPage] = useState(2);
   const [newItemLoading, setNewItemLoading] = useState(false);
 
-  const getApiMovie = new MovieService();
+  const {getTopRated, loading, error, clearError} = useMovieService();
 
   const getTrandingMovies = (page) => {
-    setLoading(true);
-    getApiMovie
-      .getTopRated(page)
-      .then((res) =>
-       setMovies(movies => [...movies, ...res]) 
-      )
-      .catch(() => setError(true))
-      .finally(() => {setNewItemLoading(false) 
-        setLoading(false)});
+    clearError()
+    getTopRated(page).then((res) =>setMovies(movies => [...movies, ...res]))
+    .finally(() => setNewItemLoading(false))
+    // setNewItemLoading(false)
   };
 
   useEffect(() => {
@@ -40,8 +34,8 @@ const RowMovies = () => {
   };
 
   const getMoreMovies = () => {
-    setPage(page => page + 1)
     setNewItemLoading(true)
+    setPage(page => page + 1)
     getTrandingMovies(page);
     console.log(page);
   };
@@ -55,10 +49,7 @@ const RowMovies = () => {
       <Error />
     </div>
   ) : null;
-  const content = !(error || loading) ? (
-    <Content movies={movies} onOpen={onOpen} />
-  ) : null;
-
+ 
   return (
     <div className="rowmovies">
       <div className="rowmovies__top">
@@ -71,15 +62,15 @@ const RowMovies = () => {
       </div>
       {errorContent}
       {loadingContent}
-      {content}
+      <Content movies={movies} onOpen={onOpen} />
       <div className="rowmovies__loadmore">
-        <button
+        {newItemLoading ? <Spinner/> : <button
           disabled={newItemLoading}
           onClick={getMoreMovies}
           className="btn btn-secondary "
         >
           Load More
-        </button>
+        </button>}
       </div>
       <Modal open={open} onClose={onClose}>
         <MovieInfo movieId={movieId} />
