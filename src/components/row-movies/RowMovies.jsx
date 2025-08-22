@@ -7,20 +7,30 @@ import MovieService from "../../services/movie-series";
 import Spinner from "../spinner/spinner";
 import Error from "../error/Error";
 import useMovieService from "../../services/movie-series";
+import { useLocation } from "react-router-dom";
 const RowMovies = () => {
   const [open, setOpen] = useState(false);
   const [movies, setMovies] = useState([]);
   const [movieId, setMovieId] = useState(null);
   const [page, setPage] = useState(2);
   const [newItemLoading, setNewItemLoading] = useState(false);
+  const location = useLocation();
 
-  const {getTopRated, loading, error, clearError} = useMovieService();
+  const { pathname } = location;
+
+  const { getTopRated, loading, error, clearError, getPopular } = useMovieService();
 
   const getTrandingMovies = (page) => {
-    clearError()
-    getTopRated(page).then((res) =>setMovies(movies => [...movies, ...res]))
-    .finally(() => setNewItemLoading(false))
-    // setNewItemLoading(false)
+    clearError();
+    if (pathname === "/popular") {
+       getPopular(page)
+        .then((res) => setMovies((movies) => [...movies, ...res]))
+        .finally(() => setNewItemLoading(false));
+    } else {
+      getTopRated(page)
+        .then((res) => setMovies((movies) => [...movies, ...res]))
+        .finally(() => setNewItemLoading(false));
+    }
   };
 
   useEffect(() => {
@@ -34,8 +44,8 @@ const RowMovies = () => {
   };
 
   const getMoreMovies = () => {
-    setNewItemLoading(true)
-    setPage(page => page + 1)
+    setNewItemLoading(true);
+    setPage((page) => page + 1);
     getTrandingMovies(page);
     console.log(page);
   };
@@ -49,13 +59,13 @@ const RowMovies = () => {
       <Error />
     </div>
   ) : null;
- 
+
   return (
     <div className="rowmovies">
       <div className="rowmovies__top">
         <div className="rowmovies__top-title">
           <img src="/tranding.svg" alt="Tranding" />
-          <h1>Trending</h1>
+          <h1>{pathname === "/popular" ? "Popular" : "Tranding"}</h1>
         </div>
         <div className="hr" />
         <a href="#">See More</a>
@@ -64,13 +74,17 @@ const RowMovies = () => {
       {loadingContent}
       <Content movies={movies} onOpen={onOpen} />
       <div className="rowmovies__loadmore">
-        {newItemLoading ? <Spinner/> : <button
-          disabled={newItemLoading}
-          onClick={getMoreMovies}
-          className="btn btn-secondary "
-        >
-          Load More
-        </button>}
+        {newItemLoading ? (
+          <Spinner />
+        ) : (
+          <button
+            disabled={newItemLoading}
+            onClick={getMoreMovies}
+            className="btn btn-secondary "
+          >
+            Load More
+          </button>
+        )}
       </div>
       <Modal open={open} onClose={onClose}>
         <MovieInfo movieId={movieId} />

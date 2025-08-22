@@ -22,10 +22,16 @@
     }
 
     li{
+      
         margin: 0 12px;
         a:hover{
             color: $primary;
             transition: 0.6s ease;
+        }
+        a{
+          &.active{
+         color: $primary;
+      }
         }
     }
   }

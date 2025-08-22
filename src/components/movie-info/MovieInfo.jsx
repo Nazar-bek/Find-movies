@@ -4,6 +4,7 @@ import MovieService from "../../services/movie-series.js";
 import Error from "../error/Error.jsx";
 import Spinner from "../spinner/spinner.jsx";
 import useMovieService from "../../services/movie-series.js";
+import { useNavigate } from "react-router-dom";
 const MovieInfo = ({movieId}) => {
   const [movie, setMovie] = useState(null);
  
@@ -30,8 +31,9 @@ const MovieInfo = ({movieId}) => {
   ) : null;
   return (
     <div className="movieinfo">
-      {errorContent},{loadingContent}
-      {content}
+         {content}
+      {errorContent}
+      {loadingContent}
     </div>
   );
 };
@@ -39,11 +41,15 @@ const MovieInfo = ({movieId}) => {
 export default MovieInfo;
 
 const Content = ({ movie }) => {
+  const navigate = useNavigate()
   return (
     <div>
       <img src={movie.backdrop_path} alt="movie" />
       <h2>{movie.name}</h2>
       <p>{movie.description}</p>
+      <button onClick={() => navigate(`/movie/${movie.id}`)} className="btn btn-light" style={{width: "100%", marginTop: "20px"}}>
+        In Details
+      </button>
     </div>
   );
 };

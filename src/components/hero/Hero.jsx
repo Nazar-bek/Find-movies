@@ -3,6 +3,8 @@ import "./hero.scss";
 import Spinner from "../spinner/spinner";
 import Error from "../error/Error";
 import useMovieService from "../../services/movie-series";
+import { useNavigate } from "react-router-dom";
+
 const Hero = () => {
   const [movie, setMovie] = useState(null);
 
@@ -23,7 +25,7 @@ const Hero = () => {
     </div>
   ) : null;
   const content = !(error || loading || !movie) ? (
-    <Content movie={movie} ongetRandomMoviee={getRandomMoviee} />
+    <Content movie={movie}/>
   ) : null;
   return (
     <div className="hero">
@@ -36,7 +38,9 @@ const Hero = () => {
           tenetur cumque, omnis, provident quaerat dolores libero odio esse modi
           necessitatibus consequatur excepturi.
         </p>
-        <button className="btn btn-primary">Detailes</button>
+        <button onClick={getRandomMoviee} className="btn btn-secondary">
+            Random Movie
+          </button>
       </div>
       <div className="hero__movie">
         {loadingContent}
@@ -48,7 +52,9 @@ const Hero = () => {
 };
 export default Hero;
 
-const Content = ({ movie, ongetRandomMoviee }) => {
+const Content = ({ movie }) => {
+
+  const navigate = useNavigate()
   return (
     <>
       <img src={movie.backdrop_path} alt="Image" />
@@ -56,10 +62,7 @@ const Content = ({ movie, ongetRandomMoviee }) => {
         <h2>{movie.name}</h2>
         <p>{movie.description}</p>
         <div>
-          <button onClick={ongetRandomMoviee} className="btn btn-secondary">
-            Random Movie
-          </button>
-          <button className="btn btn-secondary">Details</button>
+          <button className="btn btn-primary" onClick={() => navigate(`movie/${movie.id}`)}>Details</button>
         </div>
       </div>
     </>
