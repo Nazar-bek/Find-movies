@@ -1,11 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import Navbar from "../navbar/navbar";
 import { Route, Routes } from "react-router-dom";
-// import HomePage from "../../pages/HomePage";
-// import DetailedPage from "../../pages/DetailedPage";
-// import NotFound from "../../pages/NotFound";
-// import TrandingPage from "../../pages/TrandingPage";
-// import PopularPage from "../../pages/PopularPage";
 import Spinner from "../spinner/spinner";
 
 

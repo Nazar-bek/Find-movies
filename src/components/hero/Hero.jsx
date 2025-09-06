@@ -13,11 +13,11 @@ const Hero = () => {
     clearError()
     getRandomMovies().then((res) => {setMovie(res);})
   };
-
-  useEffect(() => {
-    
+      useEffect(() => {
     getRandomMoviee();
   }, []);
+
+
   const errorContent = error ? <Error /> : null;
   const loadingContent = loading ? (
     <div className="look">
@@ -25,7 +25,7 @@ const Hero = () => {
     </div>
   ) : null;
   const content = !(error || loading || !movie) ? (
-    <Content movie={movie}/>
+    <Content getMovie={getRandomMoviee} movie={movie}/>
   ) : null;
   return (
     <div className="hero">
@@ -38,9 +38,6 @@ const Hero = () => {
           tenetur cumque, omnis, provident quaerat dolores libero odio esse modi
           necessitatibus consequatur excepturi.
         </p>
-        <button onClick={getRandomMoviee} className="btn btn-secondary">
-            Random Movie
-          </button>
       </div>
       <div className="hero__movie">
         {loadingContent}
@@ -52,7 +49,9 @@ const Hero = () => {
 };
 export default Hero;
 
-const Content = ({ movie }) => {
+const Content = ({ movie , getMovie}) => {
+
+
 
   const navigate = useNavigate()
   return (
@@ -61,8 +60,9 @@ const Content = ({ movie }) => {
       <div className="hero__movie-descr">
         <h2>{movie.name}</h2>
         <p>{movie.description}</p>
-        <div>
+        <div className="hero__movie-descr_info">
           <button className="btn btn-primary" onClick={() => navigate(`movie/${movie.id}`)}>Details</button>
+          <button className="btn btn-secondary" onClick={getMovie}>Random movies</button>
         </div>
       </div>
     </>

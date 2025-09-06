@@ -1,11 +1,17 @@
 .movieitem{
-    cursor: pointer;
+    cursor: pointer; 
+    // padding: 10px 40px;
     img{
         width: 100%;
         transition: all .3s ease;
         &:hover{
             transform: scale(1.05);
         }
+
+        // @media(max-width: 480px){
+        //     height: 300px;
+        //     object-fit: cover;
+        // }
     }
     &-descr{
         margin-top: 5px;
